@@ -62,6 +62,22 @@ ansible-vault create ansible/group_vars/all/vault.yaml
 ansible-playbook ansible/build_hcp.yaml --ask-vault-pass
 ```
 
+## Destroy Resources
+
+- There is a `destroy_hcp` role that runs the same way the build role does with the state set to absent
+
+```bash
+ansible-playbook ansible/destroy_hcp.yaml --ask-vault-pass --tags "bitwarden"
+```
+
+```bash
+ansible-playbook ansible/destroy_hcp.yaml --ask-vault-pass 
+```
+
+- this will destroy ALL terraform managed resources in the terraform state file located in `tf-rosa-hcp`
+
+*it is possible to extend the terraform ansible module used here with a different backend to store state, please refer [here]("https://docs.ansible.com/ansible/latest/collections/community/general/terraform_module.html")
+
 
 # TODO
 - create a destroy task 

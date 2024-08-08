@@ -2,14 +2,14 @@
 
 - name: Run Bitwarden PW manager tasks
   include_tasks:
-    file: bitwarden_auth.yaml
+    file: bitwarden_auth
   tags:
     - bitwarden
 
 - name: Deploy the TF resources
   community.general.terraform:
     project_path: "{{ tf_project_path }}"
-    state: present
+    state: absent
     variables_files:
       - "{{ tf_project_path }}/main.tfvars"
     variables:

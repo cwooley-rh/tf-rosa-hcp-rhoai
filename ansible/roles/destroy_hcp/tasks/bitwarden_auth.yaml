@@ -1,0 +1,37 @@
+---
+
+- name: Include BW creds from vault
+  include_vars:
+    file: vault/bw_creds.yaml
+    name: bw_creds
+
+- name: Log in to Bitwarden
+  command: "bw login --apikey {{ bw_creds.bw_pass }}"
+  register: bw_login
+  no_log: false
+  ignore_errors: true
+
+- name: Get Bitwarden session key
+  command: "bw unlock --raw {{ bw_creds.bw_pass }}"
+  register: bw_session
+  no_log: false
+
+- name: Set Bitwarden session key as environment variable
+  set_fact:
+    BW_SESSION: "{{ bw_session.stdout }}"
+  no_log: true
+
+- name: Retrieve Terraform token from Bitwarden
+  command: "bw get password ocm-api --session {{ BW_SESSION }}"
+  register: terraform_token_bw
+  no_log: true
+
+- name: Retrieve admin password from Bitwarden
+  command: "bw get password admin --session {{ BW_SESSION }}"
+  register: admin_password_bw
+  no_log: true
+
+- name: Set Terraform vars for bitwarden
+  set_fact:
+    terraform_token: "{{ terraform_token_bw.stdout }}"
+    admin_password: "{{ admin_password_bw.stdout }}"

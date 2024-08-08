@@ -40,6 +40,5 @@
     - install_nvidia_gpu_operator.yaml
     - install_rhoai.yaml
   vars: 
-    kubeconfig: "{{ login.openshift_auth }}"
     api_key: "{{ login.openshift_auth.api_key }}"
     host: "{{ login.openshift_auth.host }}"
