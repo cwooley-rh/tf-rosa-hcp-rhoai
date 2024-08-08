@@ -76,7 +76,7 @@ ansible-playbook ansible/destroy_hcp.yaml --ask-vault-pass
 
 - this will destroy ALL terraform managed resources in the terraform state file located in `tf-rosa-hcp`
 
-*it is possible to extend the terraform ansible module used here with a different backend to store state, please refer [here]("https://docs.ansible.com/ansible/latest/collections/community/general/terraform_module.html")
+*it is possible to extend the terraform ansible module used here with a different backend to store state, please refer [here](https://docs.ansible.com/ansible/latest/collections/community/general/terraform_module.html)*
 
 
 # TODO
