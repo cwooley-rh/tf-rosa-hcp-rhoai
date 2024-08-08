@@ -1,0 +1,32 @@
+---
+- name: Install ROSA HCP cluster 
+  hosts: localhost
+  vars_files:
+    - vault/vault.yaml
+  
+  tasks:
+    - name: Get current AWS caller identity
+      aws_caller_info:
+      register: caller_info
+      ignore_errors: yes
+
+    - name: Check if AWS login was successful
+      fail:
+        msg: "You need to log in to AWS. Please set your AWS credentials."
+      when: caller_info.failed is defined and caller_info.failed
+
+    - name: Debug AWS caller identity
+      debug:
+        var: caller_info
+
+    - name: Check AWS account ID
+      debug:
+        msg: "Logged into AWS account: {{ caller_info.account }}"
+
+  
+  roles: 
+    - role: build_hcp
+    - role: install_rhoai_components
+
+
+   

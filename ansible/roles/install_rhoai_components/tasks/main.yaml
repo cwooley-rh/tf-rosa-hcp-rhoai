@@ -29,7 +29,7 @@
   community.okd.openshift_auth:
     host: "{{ cluster_api_url }}"
     username: "{{ cluster_admin }}"
-    password: "{{ admin_pw }}"  
+    password: "{{ admin_password }}"  
     verify_ssl: false
   register: login
 

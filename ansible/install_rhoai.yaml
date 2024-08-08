@@ -2,8 +2,8 @@
 
 - name: Install ROSA HCP cluster 
   hosts: localhost
-  # vars_files:
-  #   - vars/bitwarden_creds.yml
+  vars_files:
+    - vault/vault.yaml
   
   roles: 
     - role: install_rhoai_components

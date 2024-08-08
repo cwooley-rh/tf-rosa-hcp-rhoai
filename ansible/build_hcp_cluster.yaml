@@ -2,7 +2,7 @@
 - name: Install ROSA HCP cluster 
   hosts: localhost
   vars_files:
-    - vars/bitwarden_creds.yaml
+    - vault/vault.yaml
   
   roles: 
     - role: build_hcp

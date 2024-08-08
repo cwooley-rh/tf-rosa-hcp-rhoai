@@ -1,12 +1,10 @@
 ---
 
-- name: Set Terraform environment variables
-  shell: |
-    export TF_VAR_token="{{ terraform_token.stdout }}"
-    export TF_VAR_admin_password="{{ admin_password.stdout }}"
-  environment:
-    TF_VAR_token: "{{ terraform_token.stdout }}"
-    TF_VAR_admin_password: "{{ admin_password.stdout }}"
+- name: Run Bitwarden PW manager tasks
+  include_tasks:
+    file: bitwarden_auth
+  tags:
+    - bitwarden
 
 - name: Deploy the TF resources
   community.general.terraform:
@@ -15,10 +13,8 @@
     variables_files:
       - "{{ tf_project_path }}/main.tfvars"
     variables:
-      token: "{{ terraform_token.stdout }}"
-      admin_password: "{{ admin_password.stdout }}"
-
-# need these vars set via vault
-# - tf_token
-# - tf_project_path
-# - admin_password
+      token: "{{ terraform_token }}"
+      admin_password: "{{ admin_password }}"
+      developer_password: "{{ developer_password }}"
+  tags:
+    - always

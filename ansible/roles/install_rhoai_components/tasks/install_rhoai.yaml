@@ -20,6 +20,8 @@
       apiVersion: operators.coreos.com/v1alpha1
       kind: Subscription
       metadata:
+        labels:
+          operators.coreos.com/rhods-operator.redhat-ods-operator: ''
         name: rhods-operator
         namespace: redhat-ods-operator
       spec:
@@ -28,6 +30,10 @@
         name: rhods-operator
         source: redhat-operators
         sourceNamespace: openshift-marketplace
+
+- name: wait for RHOAI components to be
+  pause:
+    seconds: 200
 
 - name: Create Data Science Cluster
   community.okd.k8s:
