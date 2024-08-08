@@ -27,6 +27,7 @@
   roles: 
     - role: build_hcp
     - role: install_rhoai_components
+    # - role: configure_rhoai
 
 
    
