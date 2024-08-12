@@ -6,6 +6,9 @@
   
   roles: 
     - role: build_hcp
+    # - role: destroy_hcp
+    #   tags:
+    #     - destroy
 
 
    

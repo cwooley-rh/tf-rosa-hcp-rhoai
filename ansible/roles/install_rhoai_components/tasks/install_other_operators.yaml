@@ -1,16 +1,16 @@
 ---
 
-- name: Create OperatorGroup
-  community.okd.k8s:
-    host: "{{ host }}"
-    api_key: "{{ api_key }}"
-    definition:
-      apiVersion: operators.coreos.com/v1
-      kind: OperatorGroup
-      metadata:
-        name: global-operators
-        namespace: openshift-operators
-      spec: {}
+# - name: Create OperatorGroup
+#   community.okd.k8s:
+#     host: "{{ host }}"
+#     api_key: "{{ api_key }}"
+#     definition:
+#       apiVersion: operators.coreos.com/v1
+#       kind: OperatorGroup
+#       metadata:
+#         name: global-operators
+#         namespace: openshift-operators
+#       spec: {}
 
 - name: Install Service Mesh Operator
   community.okd.k8s:
@@ -68,6 +68,18 @@
     api_version: v1
     kind: Namespace
     state: present
+
+- name: Create OperatorGroup
+  community.okd.k8s:
+    host: "{{ host }}"
+    api_key: "{{ api_key }}"
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: openshift-distributed-tracing
+        namespace: openshift-distributed-tracing
+      spec: {}
     
 
 - name: Install OpenShift Distributed Tracing Platform Operator
@@ -88,6 +100,7 @@
         installPlanApproval: Automatic
         source: redhat-operators
         sourceNamespace: openshift-marketplace
+        startingCSV: jager-operator.v1.57.0-7
 
 # ONLY NEEDED FOR ROSA v 4.15 and prior
 # - name: Create namespace for Elasticsearch

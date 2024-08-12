@@ -6,7 +6,7 @@
   tags:
     - bitwarden
 
-- name: Deploy the TF resources
+- name: Destroy the TF resources
   community.general.terraform:
     project_path: "{{ tf_project_path }}"
     state: absent

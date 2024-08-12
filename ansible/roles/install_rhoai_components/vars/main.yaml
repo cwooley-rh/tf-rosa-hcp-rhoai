@@ -1,5 +1,0 @@
----
-
-cluster_admin: "admin"
-terraform_dir: "/Users/cwooley/projects/tf-rosa-hcp-rhoai/tf-rosa-hcp"
-admin_pw: "xxxxxxxXXXXXXX."
