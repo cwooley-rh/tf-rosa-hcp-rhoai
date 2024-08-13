@@ -13,9 +13,10 @@ endif
 
 BITWARDEN_APIKEY_FILE ?= .apikey.mk
 
-venv: 
+venv:
 	LC_ALL=en_US.UTF-8 python3 -m venv $(VIRTUALENV)
-	. $(VIRTUALENV)/bin/activate && pip install --upgrade pip && pip install -r requirements.txt
+	$(VIRTUALENV)/bin/pip install --upgrade pip
+	$(VIRTUALENV)/bin/pip install -r requirements.txt
 	$(VIRTUALENV)/bin/ansible-galaxy collection install -r requirements.yaml $(IGNORE_CERTS_OPTION)
 
 init:
@@ -38,13 +39,15 @@ destroy:
 	export TF_VAR_admin_password="$$(bw get password cluster-admin)" && \
 	terraform destroy -var-file=main.tfvars
 
-ansible-rhoai:
-	@cd ./ansible && ansible-playbook --ask-vault-pass build_hcp_cluster.yaml
+ansible.create:
+	$(VIRTUALENV)/bin/ansible-playbook -vvvv ./ansible/create_hcp_cluster.yaml
 
+ansible.destroy:
+	$(VIRTUALENV)/bin/ansible-playbook -vvvv ./ansible/destroy_hcp_cluster.yaml
 
-	# @. $(BITWARDEN_APIKEY_FILE); \
-	# bw login --apikey; \
-	# source $(VIRTUALENV)/bin/activate && \
-	# export BW_PASSWORD=$$(bw unlock --passwordenv BW_PASSWORD --raw); \
-	# cd ansible && \
-	# $(VIRTUALENV)/bin/ansible-playbook install-operators.yaml -i localhost --extra-vars "cluster_name=$(CLUSTER_NAME)"
+# @. $(BITWARDEN_APIKEY_FILE); \
+# bw login --apikey; \
+# source $(VIRTUALENV)/bin/activate && \
+# export BW_PASSWORD=$$(bw unlock --passwordenv BW_PASSWORD --raw); \
+# cd ansible && \
+# $(VIRTUALENV)/bin/ansible-playbook install-operators.yaml -i localhost --extra-vars "cluster_name=$(CLUSTER_NAME)"

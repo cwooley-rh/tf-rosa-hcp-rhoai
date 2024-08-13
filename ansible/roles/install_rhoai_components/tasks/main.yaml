@@ -1,25 +1,25 @@
 ---
 
-- name: Get ROSA cluster api url from terraform outputs
-  command: "terraform output -json"
-  args:
-    chdir: "{{ terraform_dir }}"
-  register: tf_output
+# - name: Get ROSA cluster api url from terraform outputs
+#   command: "terraform output -json"
+#   args:
+#     chdir: "{{ terraform_dir }}"
+#   register: tf_output
 
-- name: extract ROSA section
-  set_fact:
-    rosa_output: "{{ tf_output.stdout | from_json | json_query('rosa') }}"
+# - name: extract ROSA section
+#   set_fact:
+#     rosa_output: "{{ tf_output.stdout | from_json | json_query('rosa') }}"
 
-- name: Convert ROSA output to valid JSON
-  set_fact:
-    rosa_json: >-
-      {{
-        rosa_output | to_json | replace('=', ':') | replace('tolist(', '') | replace(')', '') | from_json
-      }}
+# - name: Convert ROSA output to valid JSON
+#   set_fact:
+#     rosa_json: >-
+#       {{
+#         rosa_output | to_json | replace('=', ':') | replace('tolist(', '') | replace(')', '') | from_json
+#       }}
 
-- name: Extract cluster_api_url
-  set_fact:
-    cluster_api_url: "{{ rosa_json.value.cluster_api_url }}"
+# - name: Extract cluster_api_url
+#   set_fact:
+#     cluster_api_url: "{{ rosa_json.value.cluster_api_url }}"
 
 - name: Debug cluster_api_url
   debug:
@@ -29,7 +29,11 @@
   community.okd.openshift_auth:
     host: "{{ cluster_api_url }}"
     username: "{{ cluster_admin }}"
+<<<<<<< HEAD
     password: "{{ admin_password }}"  
+=======
+    password: "{{ admin_pw }}"
+>>>>>>> main
     verify_ssl: false
   register: login
 
@@ -39,6 +43,11 @@
     - install_nfd.yaml
     - install_nvidia_gpu_operator.yaml
     - install_rhoai.yaml
+<<<<<<< HEAD
   vars: 
+=======
+  vars:
+    kubeconfig: "{{ login.openshift_auth }}"
+>>>>>>> main
     api_key: "{{ login.openshift_auth.api_key }}"
     host: "{{ login.openshift_auth.host }}"

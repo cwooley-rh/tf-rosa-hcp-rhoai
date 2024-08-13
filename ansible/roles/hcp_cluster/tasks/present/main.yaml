@@ -1,0 +1,28 @@
+---
+- name: Create the ROSA HCP Cluster (This may take 30 minutes)
+  cloud.terraform.terraform:
+    project_path: "{{ tf_project_path }}"
+    state: present
+    variables:
+      token: "{{ tf_vars.token }}"
+      admin_password: "{{ tf_vars.admin_password }}"
+      # ocp_version: "{{ tf_vars.ocp_version | default(omit) }}"
+      region: "{{ tf_vars.region }}"
+      cluster_name: "{{ tf_vars.cluster_name }}"
+      tags: "{{ tf_vars.tags | to_json }}"
+      bucket_names: "{{ tf_vars.bucket_names | to_json }}"
+      secondary_machine_pool_name: "{{ tf_vars.secondary_machine_pool_name }}"
+      secondary_machine_pool_instance_type: "{{ tf_vars.secondary_machine_pool_instance_type }}"
+      secondary_machine_pool_replicas: "{{ tf_vars.secondary_machine_pool_replicas }}"
+      vpc_cidr: "{{ tf_vars.vpc_cidr }}"
+      developer_password: "{{ tf_vars.developer_password }}"
+    force_init: true
+  register: _tf
+
+- set_fact:
+    rosa_cluster_api_url: "{{ _tf.outputs.rosa.value.cluster_api_url }}"
+
+- debug:
+    msg: |
+      to log into the cluster run:
+        oc login {{ rosa_cluster_api_url }} --username admin --password '{{ tf_vars.admin_password }}'

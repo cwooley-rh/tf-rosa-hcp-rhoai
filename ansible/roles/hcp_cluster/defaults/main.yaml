@@ -1,0 +1,26 @@
+---
+tf_project_path: "../tf-rosa-hcp"
+
+tf_vars:
+  # change the path to `~/.config/ocm/ocm.json` for linux hosts
+  token: "{{ (lookup('ansible.builtin.file', '~/Library/Application\ Support/ocm/ocm.json') | from_json).refresh_token | default('') }}"
+  admin_password: 'Passw0rd12345!'
+  ocp_version: ~
+  region: "us-east-2"
+  # multi_az: false
+  cluster_name: "{{ lookup('env','USER') }}-rhoai"
+  tags:
+    cost-center: CC468
+    service-phase: lab
+    app-code: MOBB-001
+    owner: "{{ lookup('env','USER') }}_redhat.com"
+    provisioner: Terraform
+  bucket_names:
+    - "{{ lookup('env','USER') }}-cluster-bucket1"
+    - "{{ lookup('env','USER') }}-cluster-bucket2"
+  compute_machine_type: "p3.2xlarge"
+  secondary_machine_pool_name: "secondary-pool"
+  secondary_machine_pool_instance_type: "m5.xlarge"
+  secondary_machine_pool_replicas: 2
+  vpc_cidr: "10.10.0.0/16"
+  developer_password: ""

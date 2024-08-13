@@ -49,20 +49,20 @@ variable "multi_az" {
 }
 
 variable "vpc_cidr" {
-  type = string 
+  type = string
   default = "10.10.0.0/16"
 }
 
 variable "pod_cidr" {
-  type = string 
+  type = string
   default = "10.128.0.0/14"
-  
+
 }
 
 variable "service_cidr" {
   type = string
   default = "172.30.0.0/16"
-  
+
 }
 variable "hosted_control_plane" {
   description = "Provision a ROSA cluster using a Hosted Control Plane."
@@ -85,10 +85,12 @@ variable "autoscaling" {
 
 variable "ocp_version"{
   type = string
+  nullable = true
+  default = null
 }
 
 variable "compute_machine_type" {
-  type = string 
+  type = string
   default = "p3.2xlarge"
 }
 
@@ -111,12 +113,12 @@ variable "bucket_names" {
 
 # Secondary Machine Pool vars
 variable "secondary_machine_pool_instance_type" {
-  type = string 
+  type = string
   default = "m5.xlarge"
 }
 
 variable "secondary_machine_pool_name" {
-  type = string 
+  type = string
   default = "workbench-mp"
 }
 
@@ -125,4 +127,3 @@ variable "secondary_machine_pool_replicas" {
   type        = number
   default     = 2
 }
-

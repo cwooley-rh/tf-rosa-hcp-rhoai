@@ -1,0 +1,22 @@
+---
+- name:         "init"
+  hosts:        localhost
+  connection:   local
+  gather_facts: true
+  tags:
+    - always
+
+  tasks:
+    - name: "set a state fact"
+      ansible.builtin.set_fact:
+        state: present
+
+- name: Install ROSA HCP cluster
+  hosts: localhost
+  connection:   local
+  roles:
+    - role: hcp_cluster
+    - role: install_rhoai_components
+      vars:
+        admin_pw: "{{ tf_vars.admin_password }}"
+        cluster_api_url: "{{ rosa_cluster_api_url }}"

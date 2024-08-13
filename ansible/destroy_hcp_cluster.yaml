@@ -1,0 +1,18 @@
+---
+- name:         init
+  hosts:        localhost
+  connection:   local
+  gather_facts: true
+  tags:
+    - always
+
+  tasks:
+    - name: "set a state fact"
+      ansible.builtin.set_fact:
+        state: absent
+
+- name:       Uninstall ROSA HCP cluster
+  hosts:      localhost
+  connection: local
+  roles:
+    - role: hcp_cluster

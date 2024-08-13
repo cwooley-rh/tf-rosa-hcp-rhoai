@@ -11,6 +11,21 @@
       metadata:
         name: redhat-ods-operator
 
+- name: Create OperatorGroup for OpenShift AI Operator
+  community.okd.k8s:
+    host: "{{ host }}"
+    api_key: "{{ api_key }}"
+    state: present
+    definition:
+      apiVersion: operators.coreos.com/v1
+      kind: OperatorGroup
+      metadata:
+        name: redhat-ods-operator-group
+        namespace: redhat-ods-operator
+      spec:
+        targetNamespaces:
+          - redhat-ods-operator
+
 - name: Create Subscription for OpenShift AI Operator
   community.okd.k8s:
     host: "{{ host }}"
@@ -31,9 +46,15 @@
         source: redhat-operators
         sourceNamespace: openshift-marketplace
 
+<<<<<<< HEAD
 - name: wait for RHOAI components to be
   pause:
     seconds: 200
+=======
+# replace this with a wait for resource
+- pause:
+    seconds: 120
+>>>>>>> main
 
 - name: Create Data Science Cluster
   community.okd.k8s:

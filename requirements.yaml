@@ -8,6 +8,4 @@ collections:
   - name: community.kubernetes
   - name: community.okd
   - name: kubernetes.core
-  
-  
-  
+  - name: cloud.terraform

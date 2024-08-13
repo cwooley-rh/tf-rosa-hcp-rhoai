@@ -8,8 +8,8 @@ module "rosa" {
   cluster_name         = var.cluster_name
   private              = var.private
   region               = var.region
-  multi_az             = false 
-  hosted_control_plane = true 
+  multi_az             = false
+  hosted_control_plane = true
   replicas             = 2
   max_replicas         = 4
   ocp_version          = var.ocp_version
@@ -18,7 +18,7 @@ module "rosa" {
   tags                 = var.tags
   developer_password   = var.developer_password
   compute_machine_type = var.compute_machine_type
-  token                = var.token  
+  token                = var.token
 }
 
 resource "aws_s3_bucket" "multiple_buckets" {
@@ -52,5 +52,3 @@ resource "rhcs_hcp_machine_pool" "secondary_machine_pool" {
     subnet_id = element(module.rosa.private_subnet_ids, 0)
 
 }
-
-

@@ -1,0 +1,8 @@
+---
+- name: "run hcp_cluster present tasks"
+  import_tasks: present/main.yaml
+  when: state == 'present'
+
+- name: "run hcp_cluster absent tasks"
+  import_tasks: absent/main.yaml
+  when: state == 'absent'
