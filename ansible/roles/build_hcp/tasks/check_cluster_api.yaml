@@ -1,0 +1,44 @@
+---
+
+
+# - name: 
+
+- name: Check if OpenShift API is running
+  uri:
+    url: '{{ cluster_api_url }}'
+    user: "admin"
+    password: "{{ admin_password }}"
+    method: GET
+    return_content: no
+    validate_certs: no
+  register: api_response
+  until: api_response.status == 200
+  retries: 10
+  delay: 30
+  ignore_errors: true
+
+- name: Ensure OpenShift API is reachable
+  assert:
+    that:
+      - api_response.status == 200
+    fail_msg: "OpenShift API is not reachable."
+
+- name: Check if OpenShift Console is running
+  uri:
+    url: "{{ cluster_console_url }}"
+    user: "admin"
+    password: "{{ admin_password }}"
+    method: GET
+    return_content: no
+    validate_certs: no
+  register: console_response
+  until: console_response.status == 200
+  retries: 10
+  delay: 30
+  ignore_errors: true
+
+- name: Ensure OpenShift Console is reachable
+  assert:
+    that:
+      - console_response.status == 200
+    fail_msg: "OpenShift Console is not reachable."

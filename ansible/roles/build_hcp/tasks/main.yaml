@@ -6,6 +6,12 @@
   tags:
     - bitwarden
 
+- name: Initialize TF "{{ tf_project_path }}"
+  command: terraform init 
+  args:
+    chdir: "{{ tf_project_path }}"
+  register: init_output
+
 - name: Deploy the TF resources
   community.general.terraform:
     project_path: "{{ tf_project_path }}"
@@ -18,3 +24,35 @@
       developer_password: "{{ developer_password }}"
   tags:
     - always
+
+- name: Get ROSA cluster api url from terraform outputs
+  command: "terraform output -json"
+  args:
+    chdir: "{{ tf_project_path }}"
+  register: tf_output
+
+- name: extract ROSA section
+  set_fact:
+    rosa_output: "{{ tf_output.stdout | from_json | json_query('rosa') }}"
+
+- name: Convert ROSA output to valid JSON
+  set_fact:
+    rosa_json: >-
+      {{
+        rosa_output | to_json | replace('=', ':') | replace('tolist(', '') | replace(')', '') | from_json
+      }}
+
+- name: Extract cluster_api_url
+  set_fact:
+    cluster_api_url: "{{ rosa_json.value.cluster_api_url }}"
+
+- name: Debug cluster_api_url
+  debug:
+    msg: "Cluster API URL: {{ cluster_api_url }}"
+
+- name: Extract cluster_console_url
+  set_fact:
+    cluster_console_url: "{{ rosa_json.value.cluster_console_url }}"
+
+- include_tasks:
+    file: check_cluster_api.yaml 

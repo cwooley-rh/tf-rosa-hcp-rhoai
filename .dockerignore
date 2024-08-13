@@ -1,0 +1,6 @@
+./virtualenv
+./tmp
+./staging
+./tf-rosa-hcp/terraform.tfstate
+./tf-rosa-hcp/terraform.tfstate.backup
+./tf-rosa-hcp/.terraform

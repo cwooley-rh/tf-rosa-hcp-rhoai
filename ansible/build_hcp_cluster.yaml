@@ -3,6 +3,10 @@
   hosts: localhost
   vars_files:
     - vault/vault.yaml
+
+  tasks:
+    - set_fact:
+        ansible_python_interpreter: ./virtualenv/bin/python3.12
   
   roles: 
     - role: build_hcp

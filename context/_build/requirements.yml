@@ -1,0 +1,13 @@
+---
+collections:
+  - name: amazon.aws
+  - name: ansible.utils
+  - name: bitwarden.secrets
+  - name: community.aws
+  - name: community.general
+  - name: community.kubernetes
+  - name: community.okd
+  - name: kubernetes.core
+  
+  
+  

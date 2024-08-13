@@ -1,0 +1,19 @@
+---
+
+version: 3
+
+build_arg_defaults:
+  ANSIBLE_GALAXY_CLI_COLLECTION_OPTS: '--pre'
+
+dependencies:
+  ansible_core:
+    package_pip: ansible-core==2.14.4
+  ansible_runner:
+    package_pip: ansible-runner
+  galaxy: requirements.yaml
+  python: requirements.txt
+  
+  
+images:
+  base_image:
+    name: docker.io/redhat/ubi9:latest

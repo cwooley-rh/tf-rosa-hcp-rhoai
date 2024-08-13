@@ -1,7 +1,7 @@
 # Stage 1: Build Stage
 FROM fedora:33 as build
 
-ENV HOME=/home/ansible
+ENV ANSIBLE_HOME=/home/ansible
 ENV TERRAFORM_VERSION=1.9.3
 
 # Install necessary packages
@@ -10,7 +10,7 @@ RUN dnf -y install \
     libxslt-devel curl cargo openssl-devel python3-devel unzip
 
 # Create ansible user and group
-RUN groupadd -g 1000 ansible && useradd -s /bin/bash -g ansible -u 1000 ansible -d ${HOME}
+RUN groupadd -g 1000 ansible && useradd -s /bin/bash -g ansible -u 1000 -d ${ANSIBLE_HOME} ansible
 
 # Create necessary directories
 RUN mkdir -p /ansible/virtualenv && chown -R ansible:ansible /ansible
@@ -19,25 +19,26 @@ RUN mkdir -p /ansible/virtualenv && chown -R ansible:ansible /ansible
 USER root
 
 # Create .local/bin directory
-RUN mkdir -p ${HOME}/.local/bin
+RUN mkdir -p ${ANSIBLE_HOME}/.local/bin
 
 # Install Terraform
 RUN curl -O https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
     && unzip terraform_${TERRAFORM_VERSION}_linux_amd64.zip \
-    && mv terraform ${HOME}/.local/bin/ \
+    && mv terraform ${ANSIBLE_HOME}/.local/bin/ \
     && rm terraform_${TERRAFORM_VERSION}_linux_amd64.zip
 
 # Install kubectl
 RUN curl -sL https://storage.googleapis.com/kubernetes-release/release/v1.18.3/bin/linux/amd64/kubectl \
-    -o ${HOME}/.local/bin/kubectl && chmod +x ${HOME}/.local/bin/kubectl
+    -o ${ANSIBLE_HOME}/.local/bin/kubectl && chmod +x ${ANSIBLE_HOME}/.local/bin/kubectl
 
 # Install ROSA CLI
 RUN curl -sL https://github.com/openshift/rosa/releases/download/v1.1.0/rosa-linux-amd64 \
-    -o ${HOME}/.local/bin/rosa && chmod +x ${HOME}/.local/bin/rosa
+    -o ${ANSIBLE_HOME}/.local/bin/rosa && chmod +x ${ANSIBLE_HOME}/.local/bin/rosa
 
 # Install AWS CLI
-RUN curl -sL https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip \
-    -o awscli.zip && unzip awscli.zip && ./aws/install -i ${HOME}/.local/aws-cli -b ${HOME}/.local/bin
+RUN curl -sL "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o awscliv2.zip && \
+    unzip awscliv2.zip && \
+    ./aws/install -i ${ANSIBLE_HOME}/.local/aws-cli -b ${ANSIBLE_HOME}/.local/bin
 
 # Switch back to ansible user
 USER ansible
@@ -58,30 +59,29 @@ COPY . /ansible
 # Stage 2: Final Stage
 FROM fedora:33
 
-ENV HOME=/home/ansible
+ENV ANSIBLE_HOME=/home/ansible
 
 # Install necessary packages
 RUN dnf -y install \
-    bash openssl unzip glibc groff
+    bash openssl unzip glibc groff git less
 
 # Create ansible user and group
-RUN groupadd -g 1000 ansible && useradd -s /bin/bash -g ansible -u 1000 ansible -d ${HOME}
+RUN groupadd -g 1000 ansible && useradd -s /bin/bash -g ansible -u 1000 -d ${ANSIBLE_HOME} ansible
 RUN mkdir -p /ansible/virtualenv && chown -R ansible:ansible /ansible
 
 # Copy executables and virtual environment from build stage
-COPY --chown=ansible:ansible ./ /ansible
-COPY --from=build ${HOME}/.local ${HOME}/.local
+COPY --chown=ansible:ansible . /ansible
+COPY --from=build ${ANSIBLE_HOME}/.local ${ANSIBLE_HOME}/.local
 COPY --from=build /ansible/virtualenv /ansible/virtualenv
 
 # Switch to ansible user
-USER ansible
+USER ansible:ansible
 
 # Set environment variables
-ENV PATH=${HOME}/.local/bin:/ansible/virtualenv/bin:/ansible/staging/bin:$PATH
-ENV PYTHONPATH=/ansible/virtualenv/lib/python3.12/site-packages/
+ENV PATH=${ANSIBLE_HOME}/.local/bin:/ansible/virtualenv/bin:/ansible/staging/bin:$PATH
+ENV PYTHONPATH=/ansible/virtualenv/lib/python3.9/site-packages/
 ENV ANSIBLE_PYTHON_INTERPRETER=/ansible/virtualenv/bin/python
 ENV KUBECONFIG=/ansible/staging/.kube/config
 ENV ANSIBLE_FORCE_COLOR=1
 
 WORKDIR /ansible
-

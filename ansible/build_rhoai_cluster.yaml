@@ -5,6 +5,9 @@
     - vault/vault.yaml
   
   tasks:
+    - set_fact:
+        ansible_python_interpreter: virtualenv/bin/python3.12
+
     - name: Get current AWS caller identity
       aws_caller_info:
       register: caller_info
