@@ -1,4 +1,4 @@
-ocp_version = "4.16.3"
+ocp_version = "4.16.4"
 region = "us-east-2"
 multi_az = false
 cluster_name = "cwooley-rhoai"

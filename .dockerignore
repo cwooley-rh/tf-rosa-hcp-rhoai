@@ -3,4 +3,5 @@
 ./staging
 ./tf-rosa-hcp/terraform.tfstate
 ./tf-rosa-hcp/terraform.tfstate.backup
-./tf-rosa-hcp/.terraform
+./tf-rosa-hcp/.terraform.lock.hcl
+./tf-rosa-hcp/main.plan

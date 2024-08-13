@@ -6,16 +6,12 @@
   tags:
     - bitwarden
 
-- name: Initialize TF "{{ tf_project_path }}"
-  command: terraform init 
-  args:
-    chdir: "{{ tf_project_path }}"
-  register: init_output
-
 - name: Deploy the TF resources
   community.general.terraform:
     project_path: "{{ tf_project_path }}"
     state: present
+    force_init: true
+    provider_upgrade: true
     variables_files:
       - "{{ tf_project_path }}/main.tfvars"
     variables:

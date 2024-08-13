@@ -40,6 +40,10 @@ RUN curl -sL "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip" -o awsc
     unzip awscliv2.zip && \
     ./aws/install -i ${ANSIBLE_HOME}/.local/aws-cli -b ${ANSIBLE_HOME}/.local/bin
 
+# Copy entrypoint script and set permissions
+COPY entrypoint.sh ${ANSIBLE_HOME}/entrypoint.sh
+RUN chmod +x ${ANSIBLE_HOME}/entrypoint.sh 
+
 # Switch back to ansible user
 USER ansible
 
@@ -71,17 +75,19 @@ RUN mkdir -p /ansible/virtualenv && chown -R ansible:ansible /ansible
 
 # Copy executables and virtual environment from build stage
 COPY --chown=ansible:ansible . /ansible
-COPY --from=build ${ANSIBLE_HOME}/.local ${ANSIBLE_HOME}/.local
+COPY --from=build ${ANSIBLE_HOME} ${ANSIBLE_HOME}
 COPY --from=build /ansible/virtualenv /ansible/virtualenv
 
 # Switch to ansible user
 USER ansible:ansible
 
 # Set environment variables
-ENV PATH=${ANSIBLE_HOME}/.local/bin:/ansible/virtualenv/bin:/ansible/staging/bin:$PATH
+ENV PATH=${ANSIBLE_HOME}/.local/bin:/ansible/virtualenv/bin:/ansible/staging/bin:$PATH:${ANSIBLE_HOME}
 ENV PYTHONPATH=/ansible/virtualenv/lib/python3.9/site-packages/
 ENV ANSIBLE_PYTHON_INTERPRETER=/ansible/virtualenv/bin/python
 ENV KUBECONFIG=/ansible/staging/.kube/config
 ENV ANSIBLE_FORCE_COLOR=1
 
 WORKDIR /ansible
+
+ENTRYPOINT [ "/home/ansible/entrypoint.sh" ]
